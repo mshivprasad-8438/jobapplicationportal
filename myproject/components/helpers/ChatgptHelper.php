@@ -23,7 +23,7 @@ class ChatgptHelper extends CComponent {
     );
  
     // Get the Bearer Token
-    $authorization_token = $_ENV["openAIKey"];
+   
     // Set the Content Type
     $content_type = "application/json";
  
