@@ -24,7 +24,7 @@
             'CActiveForm',
             array(
                 'id' => 'employee-form',
-                'action' => Yii::app()->createUrl('/project/employee/Signin'),
+                'action' => Yii::app()->createUrl('/myproject/employee/Signin'),
                 'enableClientValidation' => true,
                 'clientOptions' => array(
                     'validateOnSubmit' => true,

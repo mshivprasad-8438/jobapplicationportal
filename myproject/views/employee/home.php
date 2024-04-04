@@ -58,7 +58,7 @@
             <!-- <input type="hidden" name="id" value="<?php //echo $item["_id"];   ?>"> -->
             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
         </form>
-        <?php echo CHtml::link('Add job', array('/project/jobs/AddJob'), array('class' => 'btn btn-primary')); ?>
+        <?php echo CHtml::link('Add job', array('/myproject/jobs/AddJob'), array('class' => 'btn btn-primary')); ?>
 
 
 

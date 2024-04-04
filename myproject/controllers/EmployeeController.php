@@ -204,7 +204,7 @@ class EmployeeController extends Controller
         // echo CJSON::encode($_POST['Employee']);
         if (EmployeeHelper::signup()) {
             $this->redirect(
-                '/project/employee',
+                '/myproject/employee',
             );
         }
         $this->render(

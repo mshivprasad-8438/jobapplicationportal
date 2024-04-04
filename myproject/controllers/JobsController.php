@@ -1,6 +1,6 @@
 <?php
-require_once ('protected/modules/project/components/helpers/JobsHelper.php');
-require_once ('protected/modules/project/components/helpers/S3Helper.php');
+require_once ('protected/modules/myproject/components/helpers/JobsHelper.php');
+require_once ('protected/modules/myproject/components/helpers/S3Helper.php');
 class JobsController extends Controller
 {
     /**
@@ -120,7 +120,7 @@ class JobsController extends Controller
         if (isset($_POST['Jobs'])) {//['AddForm']
             $response = JobsHelper::addjob();
             if ($response) {
-                $this->redirect('/project/jobs/');
+                $this->redirect('/myproject/jobs/');
             }
         }
         $this->render(
@@ -139,7 +139,7 @@ class JobsController extends Controller
     //     if (isset($_POST['Jobs'])) {
     //         $response = JobsHelper::updatejob();
     //         if ($response) {
-    //             $this->redirect('/project/jobs/');
+    //             $this->redirect('/myproject/jobs/');
     //         }
     //     }
     //     $this->render(
@@ -159,8 +159,8 @@ class JobsController extends Controller
         } else {
             echo "No id passed";
         }
-        $this->redirect('/project/employee/home');
-        // $this->redirect('/project/employee/posts');
+        $this->redirect('/myproject/employee/home');
+        // $this->redirect('/myproject/employee/posts');
 
     }
 

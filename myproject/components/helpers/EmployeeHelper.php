@@ -41,11 +41,11 @@ class EmployeeHelper
                         'companyName' => $companyName['result'][0]['companyName'],
                         'token' => $encodedEmail
                     );
-                Yii::app()->request->redirect("/project/employee/home");
+                Yii::app()->request->redirect("/myproject/employee/home");
 
             } else {
 
-                Yii::app()->request->redirect("/project/employee/Signup");
+                Yii::app()->request->redirect("/myproject/employee/Signup");
             }
             unset($_POST['EmployeeSignin']);
 

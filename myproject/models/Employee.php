@@ -37,7 +37,6 @@ class Employee extends EMongoDocument{
     public function beforeSave()
     {
         if ($this->isNewRecord) {
-            // $this->registeredTime = new MongoDate(strtotime(date('Y-m-d H:i:s')));// Assuming create_time is a datetime field
             $this->password=CPasswordHelper::hashPassword($this->password);//base64_encode($this->password);
             $this->role="employee";
             $this->eligibility= false;

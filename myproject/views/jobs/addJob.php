@@ -25,7 +25,7 @@
             'CActiveForm',
             array(
                 'id' => 'employee-form',
-                'action' => Yii::app()->createUrl('/project/jobs/AddJob'),
+                'action' => Yii::app()->createUrl('/myproject/jobs/AddJob'),
                 'enableClientValidation' => true,
                 'clientOptions' => array(
                     'validateOnSubmit' => true,
