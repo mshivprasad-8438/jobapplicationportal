@@ -39,13 +39,7 @@ class SigninformController extends Controller{
               $session->open();
               $session['jwtToken']=$token; 
               
-        // $session = new CHttpSession;
-        // $session->open();
-        // $x =Yii::app()->user->getState("username");
-        // $session["username"]=$x;
-      //  $session["email"]=$model->email;
-      
-            
+           
              $this->redirect("/myproject/about");
             }
             else{

@@ -1,5 +1,5 @@
 <?php
-require_once ('/data/live/protected/modules/myproject/components/helpers/EmployeeHelper.php');
+
 use MongoDB\BSON\ObjectId;
 
 class EmployeeController extends Controller
@@ -29,6 +29,9 @@ class EmployeeController extends Controller
 
     public function actionIndex()
     {
+        if (!(Yii::app()->session["empInfo"]["token"])) {
+            $this->redirect(array("/myproject"));
+        }
         // $this->render('signupform',array('model'=>Employee::model()));
         $this->render(
             'index',
@@ -37,11 +40,19 @@ class EmployeeController extends Controller
 
     public function actionHome()
     {
+
+        if (!(Yii::app()->session["empInfo"]["token"])) {
+            $this->redirect(array("/myproject"));
+        }
+        // echo "in the home action if";
+
+        $this->layout = 'employeelayout';
+        echo Yii::app()->session["empInfo"]["email"];
+        $val = base64_decode(Yii::app()->session["empInfo"]["token"]);
+        $model = Employee::model()->findByAttributes(array("email" => $val));
         $this->render(
             'home',
-            array(
-            )
-
+            array("data" => $model)
         );
     }
 
@@ -58,44 +69,25 @@ class EmployeeController extends Controller
         }
     }
 
-    // public function actionDisplay()
-    // {
-    //     $model = new Jobs;
-    //     $criteria = new EMongoCriteria;
-    //     $criteria->openings('>', 0);
 
-
-    //     if (!empty ($_POST['selectCategory']) && $_POST['selectCategory'] !="None") {
-    //         // $this->layout = "Layyingout";
-    //         $model = new Jobs;
-    //         $criteria = new EMongoCriteria;
-    //         $criteria->category('==',$_POST['selectCategory'])->limit(5);
-
-    //         // $model = new Item();
-    //         // $model = $model->findAllByAttributes(array('title' => $_POST['search']));
-    //         // $model = $model->findAll($criteria);
-    //         // $forming = new AddForm();
-
-
-    //     } 
-    //     $model = $model->findAll($criteria);
-    //     echo "<pre>";
-    //     echo CJSON::encode($model);
-    //     exit;
-    //     // $this->render(
-    //     //     'home',
-    //     //     array(
-    //     //         'jsonArray' => $model,
-    //     //         'model' => $forming,
-    //     //     )
-    //     // );
-    // }
     public function actionSignin()
     {
 
         $model = new EmployeeSignin();
         if (isset($_POST['EmployeeSignin'])) {
-            EmployeeHelper::signin();
+            $response = EmployeeHelper::signin();
+            if ($response['fun']) {
+                $this->render(
+                    $response['fun'],
+                    array(
+                        'model' => $response['model'],
+                        "message" => $response['message']
+                    )
+                );
+            } else {
+                $this->redirect("/myproject/employee/home");
+            }
+            return;
         }
         $this->render(
             'signin',
@@ -104,89 +96,45 @@ class EmployeeController extends Controller
             )
         );
     }
+
+
+    public function actionJobs()
+    {
+        if (!(Yii::app()->session["empInfo"]["token"])) {
+            $this->redirect(array("/myproject"));
+        }
+        $this->redirect("/myproject/jobs/addjob");
+    }
+
+    public function actionDelete()
+    {
+        if (!(Yii::app()->session["empInfo"]["token"])) {
+            $this->redirect(array("/myproject"));
+        }
+        $this->redirect("/myproject/jobs/delete");
+    }
+
     public function actionMyapplicants()
     {
-        $this->layout = false;
-
-        $email = "nani@gmail.com"; 
-        $criteria = new EMongoCriteria;
-        $criteria->addCond('email', '==', $email);
-
-        $distinctValues = Jobs::model()->findAll($criteria);
-        
-        $jobIds = array_map(function ($id) {
-            echo ((string) $id['_id']);
-            return ((string) $id["_id"]);
-        }, $distinctValues);//exit;
-        var_dump($jobIds);//exit;
-
-        // Match ApplicationCollection documents where jobid is in the list of jobIds
-        $criteria = new EMongoCriteria;
-        $criteria = [
-            'jobid' => ['$in' => $jobIds]
-        ];
-        $applications = ApplicationCollection::model()->findAllByAttributes($criteria);
-        echo CJSON::encode($applications);
-        exit;
-        // var_dump( $applications);
-        echo sizeof($applications) . 'length\n';
-        // $data = Application::model()
-        //     ->startAggregation()
-        //     ->sort(["cost" => -1])
-        //     ->limit(2)
-        //     ->aggregate();
-
-        // $lookup: {
-        //     from: "jobs",
-        //     localField: "job_id",
-        //     foreignField: "_id",
-        //     as: "job"
-        //   }
+        if (!(Yii::app()->session["empInfo"]["token"])) {
+            $this->redirect(array("/myproject"));
+        }
+        $this->layout = "employeelayout";
+        $applications = EmployeeHelper::Myapplicants();
+        $this->render("applicants", array('applications' => $applications));
     }
 
-    public function actionClient()
-    {
 
-        $criteria = new EMongoCriteria;
-
-        // Pagination
-        $count = Jobs::model()->count($criteria);
-        $pagination = new CPagination($count);
-        $pagination->pageSize = 2; // Number of items per page
-        // $pagination->applyLimit($criteria);
-        $criteria->limit($pagination->pageSize);
-        $criteria->offset($pagination->currentPage * $pagination->pageSize);
-        $jobs = Jobs::model()->findAll($criteria);
-        // var_dump( $pagination);//$criteria);
-        // exit;
-
-        $this->render(
-            'applicants',
-            array(
-                'jobs' => $jobs,
-                'pagination' => $pagination,
-            )
-        );
-
-    }
 
     public function actionPosts()
     {
-        $model = new Jobs;
-        $criteria = new EMongoCriteria;
-        $criteria->email('==', "nani@gmail.com");
-        if (!empty($_POST['selectCategory']) && $_POST['selectCategory'] != "None") {
-            $model = new Jobs;
-            $criteria = new EMongoCriteria;
-            $criteria->category('==', $_POST['selectCategory'])->limit(5);
+        if (!(Yii::app()->session["empInfo"]["token"])) {
+            $this->redirect(array("/myproject"));
         }
-        $model = $model->findAll($criteria);
-        // echo "<pre>";
-        // echo CJSON::encode($model);
-        // // echo 
-        // exit;
+        $this->layout = 'employeelayout';
+        $model = EmployeeHelper::posts();
         $this->render(
-            'home',
+            'posts',
             array(
                 'jobs' => $model,
                 'model' => Jobs::model(),
@@ -201,11 +149,13 @@ class EmployeeController extends Controller
     public function actionSignup()
     {
         $forming = new Employee;
-        // echo CJSON::encode($_POST['Employee']);
-        if (EmployeeHelper::signup()) {
-            $this->redirect(
-                '/myproject/employee',
-            );
+        if (isset($_POST['Employee'])) {
+            if (EmployeeHelper::signup()) {
+                $this->redirect(
+                    '/myproject/employee/home',
+                );
+                return;
+            }
         }
         $this->render(
             'signup',
@@ -218,8 +168,6 @@ class EmployeeController extends Controller
     public function actionLogout()
     {
         Yii::app()->session->destroy();
-        $this->render(
-            'index',
-        );
+        $this->redirect(array("/myproject"));
     }
 }

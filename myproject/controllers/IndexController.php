@@ -4,7 +4,9 @@ class IndexController extends Controller{
     public function actionIndex()
 
     {
-
+        if ((Yii::app()->session["empInfo"]["token"])) {
+            $this->redirect(array("/myproject/employee"));
+        }
         // $session=new CHttpSession;
         // $session->open();
         if(!Yii::app()->user->isGuest)

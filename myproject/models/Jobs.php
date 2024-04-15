@@ -1,5 +1,5 @@
 <?php
- 
+
 class Jobs extends EMongoDocument
 {
     public $jobTitle;
@@ -16,21 +16,17 @@ class Jobs extends EMongoDocument
     {
         return "jobs";
     }
- 
-    public function getMongoDBComponent()
-    {
-        return Yii::app()->mongodbMp;
-    }
- 
- 
+
+
+
     public function embeddedDocuments()
     {
         return array(
             'details' => 'JobDetails',
         );
     }
- 
- 
+
+
     public function beforeSave()
     {
         try {
@@ -46,13 +42,28 @@ class Jobs extends EMongoDocument
         }
         return true;
     }
- 
+
     public function rules()
     {
         return array(
-            array('jobTitle,companyName,category,totalApplications,openings,lastDate,logo', 'required'),
-            array('jobTitle,companyName,category,totalApplications,openings,lastDate,logo', 'safe'),
+            array('jobTitle,category,totalApplications,openings,lastDate,logo', 'required'),
+            array('jobTitle,category,totalApplications,openings,lastDate,logo', 'safe'),
+            array('totalApplications, openings', 'numerical', 'integerOnly' => true),
+            array('openings', 'validateOpeningsLessThanTotal'),
+            array('totalApplications, openings', 'validateGreaterThanZero'),
         );
+    }
+    public function validateGreaterThanZero($attribute, $params)
+    {
+        if ($this->$attribute <= 0) {
+            $this->addError($attribute, ucfirst($attribute) . ' must be greater than zero.');
+        }
+    }
+    public function validateOpeningsLessThanTotal($attribute, $params)
+    {
+        if ($this->openings >= $this->totalApplications) {
+            $this->addError($attribute, 'Openings must be less than Total Applications.');
+        }
     }
     public static function model($className = __CLASS__)
     {

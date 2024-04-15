@@ -23,22 +23,22 @@ class JobsController extends Controller
         );
     }
 
-    // public function beforeAction($action){
-    //     var_dump($action);
-    //     return true;
-    // }
+
+    public function beforeAction($action)
+    {
+        if (!(Yii::app()->session["empInfo"]["token"])) {
+            $this->redirect(array("/myproject"));
+        }
+        return true;
+    }
     // public function afterAction($action){
     //     var_dump($action);
     //     return true;
     // }
 
-
     public function actionIndex()
     {
-
-        $this->render(
-            'home',
-        );
+        $this->redirect(array("/myproject/employee/home"));
     }
 
     /**
@@ -54,73 +54,35 @@ class JobsController extends Controller
         }
     }
 
-    public function actionApplication()
+    public function actionUpdateApplication()
     {
         if (!empty($_POST) && isset($_POST["id"])) {
-            echo $_POST['id'];
-            $job_id = new MongoDB\BSON\ObjectID((string) $_POST["id"]);
-            $data = Jobs::model()->findByAttributes(array('_id' => $job_id));
-            if ($data === null) {
-                echo "Data is not available";
-                exit;
-            }
-
-            // Delete the model
-            $data->delete();
-            // Redirect to the index page or any other page
-
-        } else {
-            echo "No id passed";
+            $response = JobsHelper::updateApplication();
         }
-        $this->redirect('/index.php/item');
+        $this->redirect('/myproject/employee/myapplicants');
 
     }
 
-    public function actionDisplay()
-    {
-        $model = new Jobs;
-        $criteria = new EMongoCriteria;
-        $criteria->openings('>', 0);
-
-
-        if (!empty($_POST['selectCategory']) && $_POST['selectCategory'] != "None") {
-            // $this->layout = "Layyingout";
-            $model = new Jobs;
-            $criteria = new EMongoCriteria;
-            $criteria->category('==', $_POST['selectCategory'])->limit(5);
-
-            // $model = new Item();
-            // $model = $model->findAllByAttributes(array('title' => $_POST['search']));
-            // $model = $model->findAll($criteria);
-            // $forming = new AddForm();
-
-
-        }
-        $model = $model->findAll($criteria);
-        echo "<pre>";
-        echo CJSON::encode($model);
-        exit;
-        // $this->render(
-        //     'home',
-        //     array(
-        //         'jsonArray' => $model,
-        //         'model' => $forming,
-        //     )
-        // );
-    }
-
-    /**
-     * Displays the contact page
-     */
 
     public function actionAddJob()
     {
+        $this->layout = false;//"employeelayout";
         $model = new Jobs();
 
         if (isset($_POST['Jobs'])) {//['AddForm']
             $response = JobsHelper::addjob();
-            if ($response) {
-                $this->redirect('/myproject/jobs/');
+            // var_dump($response);exit;
+            if ($response[0]) {
+                $this->redirect('/myproject/employee/posts');
+            } else {
+                $this->render(
+                    'addJob',
+                    array(
+                        'model' => $model,
+                        'error' => $response[1],
+                    )
+                );
+                return;
             }
         }
         $this->render(
@@ -132,6 +94,10 @@ class JobsController extends Controller
 
     }
 
+    public function actionCancel()
+    {
+        $this->redirect(array('/myproject/employee/home'));
+    }
 
     // public function actionUpdate()
     // {
@@ -152,15 +118,13 @@ class JobsController extends Controller
 
     public function actionDelete()
     {
-        $_POST["id"] = "660d5e2f28d84f12a7091f62";
         $this->layout = false;
         if (!empty($_POST) && isset($_POST["id"])) {
             JobsHelper::deletejob();
         } else {
             echo "No id passed";
         }
-        $this->redirect('/myproject/employee/home');
-        // $this->redirect('/myproject/employee/posts');
+        $this->redirect('/myproject/employee/posts');
 
     }
 

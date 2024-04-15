@@ -15,9 +15,7 @@ class ApplicationCollection extends EMongoDocument {
     public function getCollectionName() {
         return 'applicationcollection'; // Replace with your MongoDB collection name
     }
-    public function getMongoDBComponent(){
-        return Yii::app()->mongodb;
-    }
+
     public function rules()
 {
     return array(

@@ -1,7 +1,7 @@
 <?php
 use Firebase\JWT\JWT;
 
-class JwtComp extends CApplicationComponent
+class JwtComp 
 {
     public $secretKey = 'dummy@096';
     public $algorithm = 'HS256';
@@ -25,7 +25,11 @@ class JwtComp extends CApplicationComponent
     try {
         
         // Pass the algorithm as an array
-        $decoded = JWT::decode($token,array($this->algorithm=> $this->secretKey));
+        var_dump($token);
+        echo 'hello in the decode here';
+        $decoded = JWT::decode($token,array($this->algorithm, $this->secretKey));
+        echo 'back to decode fun';
+        var_dump($decoded);exit;
         return $decoded->data;
     } catch (Exception $e) {
         return null;

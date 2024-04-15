@@ -6,6 +6,7 @@ class CurlHelper extends CComponent {
       //For GET requests always make sure to not change the content_type from the default
       
       //Build the curl
+      // echo ''. $url .''. $method .'';var_dump( $parameters) ;exit;
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -42,6 +43,7 @@ class CurlHelper extends CComponent {
       $result = curl_exec($ch);
    
       // Convert to PHP array and return
-      return json_decode($result, true);
+      // echo $result;exit;
+      return json_decode($result);
     }
 }

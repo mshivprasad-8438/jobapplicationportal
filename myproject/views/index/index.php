@@ -273,11 +273,12 @@ SignIn
               At JobForge, we believe in simplifying the hiring process. Our free job posting service is designed to help you find the right talent without breaking the bank. Click, post, and connect with candidates today!
              </p>
             <div class="btn-box">
-              <a href="/myproject/employersigninform" class="btn-1">
-               Employer Login
+              <a href="/myproject/employee/signin" class="btn-1">
+               Employer Signin
               </a>
-              <a href="/myproject/employersignupform" class="btn-2">
-               Registration
+              <br>
+              <a href="/myproject/employee/signup" class="btn-2">
+               Employer Signup
               </a>
             </div>
           </div>
